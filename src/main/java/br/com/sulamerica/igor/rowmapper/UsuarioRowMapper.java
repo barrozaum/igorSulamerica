@@ -21,12 +21,8 @@ public class UsuarioRowMapper implements RowMapper<Usuario> {
 		usuario.setNome(rs.getString("nome"));
 		usuario.setCpf(rs.getString("cpf"));
 		usuario.setAtivo(rs.getBoolean("ativo"));
-		try {
-			usuario.setDataNascimento(rs.getDate("data_nascimento"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		usuario.setDataNascimento(rs.getDate("data_nascimento"));
+		
 		return usuario;
 	}
 }

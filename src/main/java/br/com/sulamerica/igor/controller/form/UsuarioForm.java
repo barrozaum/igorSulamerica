@@ -36,7 +36,7 @@ public class UsuarioForm {
 	@NotEmpty
 	private String dataNascimento;
 
-	private boolean ativo;
+	private boolean ativo = true;
 
 	@NotNull
 	@NotEmpty
@@ -104,6 +104,8 @@ public class UsuarioForm {
 
 	public Usuario converter(ICargoRepository cargoRepository, IPerfilRepository perilRepository) {
 		Usuario u = new Usuario();
+		
+		
 
 		// Verificando se o cargo existe
 		Optional<Cargo> cargo = cargoRepository.findById(new Long(this.cargo));

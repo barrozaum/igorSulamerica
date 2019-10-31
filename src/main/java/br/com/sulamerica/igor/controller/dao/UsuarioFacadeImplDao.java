@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import br.com.sulamerica.igor.controller.UsuarioController;
 import br.com.sulamerica.igor.controller.dto.UsuarioDTO;
 import br.com.sulamerica.igor.model.Usuario;
+import br.com.sulamerica.igor.rowmapper.UsuarioDTORowMapper;
 import br.com.sulamerica.igor.rowmapper.UsuarioRowMapper;
 import javassist.NotFoundException;
 
@@ -82,24 +83,8 @@ public class UsuarioFacadeImplDao implements IUsuarioFacadeDao {
 				+ "FROM USUARIO u\r\n" + "JOIN PERFIL p \r\n" + "ON  U.perfil_id = p.id\r\n" + "JOIN CARGO c\r\n"
 				+ "on u.cargo_id = c.id ";
 		List<UsuarioDTO> usuarios = new ArrayList<>();
-		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new RowMapper<UsuarioDTO>() {
+		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new UsuarioDTORowMapper());
 
-			@Override
-			public UsuarioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-				UsuarioDTO usuario = new UsuarioDTO();
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setAtivo(rs.getString("ativo").equalsIgnoreCase("true") ? "Ativo" : "Inativo");
-				usuario.setDataNascimento(rs.getDate("data_nascimento").toLocaleString());
-				usuario.setPerfil(rs.getString("descricao_perfil"));
-				usuario.setCargo(rs.getString("descricao_cargo"));
-				usuario.setSexo(rs.getString("sexo"));
-
-				return usuario;
-			}
-
-		});
 		return usuarios;
 	}
 
@@ -112,24 +97,7 @@ public class UsuarioFacadeImplDao implements IUsuarioFacadeDao {
 				+ ") t1\r\n" + "where t1.idade > 18";
 
 		List<UsuarioDTO> usuarios = new ArrayList<>();
-		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new RowMapper<UsuarioDTO>() {
-
-			@Override
-			public UsuarioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-				UsuarioDTO usuario = new UsuarioDTO();
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setAtivo(rs.getString("ativo").equalsIgnoreCase("true") ? "Ativo" : "Inativo");
-				usuario.setDataNascimento(rs.getDate("data_nascimento").toLocaleString());
-				usuario.setPerfil(rs.getString("descricao_perfil"));
-				usuario.setCargo(rs.getString("descricao_cargo"));
-				usuario.setSexo(rs.getString("sexo"));
-
-				return usuario;
-			}
-
-		});
+		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new UsuarioDTORowMapper());
 		return usuarios;
 	}
 
@@ -140,24 +108,7 @@ public class UsuarioFacadeImplDao implements IUsuarioFacadeDao {
 				+ " on u.cargo_id = c.id" + " where SUBSTR(cpf, 1, 1) = 0 ";
 
 		List<UsuarioDTO> usuarios = new ArrayList<>();
-		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new RowMapper<UsuarioDTO>() {
-
-			@Override
-			public UsuarioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-				UsuarioDTO usuario = new UsuarioDTO();
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setAtivo(rs.getString("ativo").equalsIgnoreCase("true") ? "Ativo" : "Inativo");
-				usuario.setDataNascimento(rs.getDate("data_nascimento").toLocaleString());
-				usuario.setPerfil(rs.getString("descricao_perfil"));
-				usuario.setCargo(rs.getString("descricao_cargo"));
-				usuario.setSexo(rs.getString("sexo"));
-
-				return usuario;
-			}
-
-		});
+		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new UsuarioDTORowMapper());
 		return usuarios;
 
 	}
@@ -165,124 +116,44 @@ public class UsuarioFacadeImplDao implements IUsuarioFacadeDao {
 	public List<UsuarioDTO> buscarUsuarioPorNome(JdbcTemplate jdbcTemplate, String nome) throws Exception {
 
 		String sql = " SELECT ativo, cpf, data_nascimento , nome , sexo, descricao_perfil, descricao_cargo\r\n"
-				+ "FROM USUARIO u\r\n" 
-				+ "JOIN PERFIL p \r\n" 
-				+ "ON  U.perfil_id = p.id\r\n" 
-				+ "JOIN CARGO c\r\n"
-				+ "on u.cargo_id = c.id "
-				+ " where lower(u.nome) like ?";
+				+ "FROM USUARIO u\r\n" + "JOIN PERFIL p \r\n" + "ON  U.perfil_id = p.id\r\n" + "JOIN CARGO c\r\n"
+				+ "on u.cargo_id = c.id " + " where lower(u.nome) like ?";
 		List<UsuarioDTO> usuarios = new ArrayList<>();
-		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { "%"+nome.toLowerCase()+"%" }, new RowMapper<UsuarioDTO>() {
+		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { "%" + nome.toLowerCase() + "%" },
+				new UsuarioDTORowMapper());
 
-			@Override
-			public UsuarioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-				UsuarioDTO usuario = new UsuarioDTO();
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setAtivo(rs.getString("ativo").equalsIgnoreCase("true") ? "Ativo" : "Inativo");
-				usuario.setDataNascimento(rs.getDate("data_nascimento").toLocaleString());
-				usuario.setPerfil(rs.getString("descricao_perfil"));
-				usuario.setCargo(rs.getString("descricao_cargo"));
-				usuario.setSexo(rs.getString("sexo"));
-
-				return usuario;
-			}
-
-		});
 		return usuarios;
 	}
 
 	public List<UsuarioDTO> buscarUsuarioPorCpf(JdbcTemplate jdbcTemplate, String cpf) throws Exception {
 
 		String sql = " SELECT ativo, cpf, data_nascimento , nome , sexo, descricao_perfil, descricao_cargo\r\n"
-				+ "FROM USUARIO u\r\n" 
-				+ "JOIN PERFIL p \r\n" 
-				+ "ON  U.perfil_id = p.id\r\n" 
-				+ "JOIN CARGO c\r\n"
-				+ "on u.cargo_id = c.id "
-				+ " where lower(u.cpf) = ?";
+				+ "FROM USUARIO u\r\n" + "JOIN PERFIL p \r\n" + "ON  U.perfil_id = p.id\r\n" + "JOIN CARGO c\r\n"
+				+ "on u.cargo_id = c.id " + " where lower(u.cpf) = ?";
 		List<UsuarioDTO> usuarios = new ArrayList<>();
-		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { cpf }, new RowMapper<UsuarioDTO>() {
-
-			@Override
-			public UsuarioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-				UsuarioDTO usuario = new UsuarioDTO();
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setAtivo(rs.getString("ativo").equalsIgnoreCase("true") ? "Ativo" : "Inativo");
-				usuario.setDataNascimento(rs.getDate("data_nascimento").toLocaleString());
-				usuario.setPerfil(rs.getString("descricao_perfil"));
-				usuario.setCargo(rs.getString("descricao_cargo"));
-				usuario.setSexo(rs.getString("sexo"));
-
-				return usuario;
-			}
-
-		});
+		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { cpf }, new UsuarioDTORowMapper());
 		return usuarios;
 	}
 
 	public List<UsuarioDTO> buscarUsuarioPorCargo(JdbcTemplate jdbcTemplate2, String cargo) throws Exception {
 
 		String sql = " SELECT ativo, cpf, data_nascimento , nome , sexo, descricao_perfil, descricao_cargo\r\n"
-				+ "FROM USUARIO u\r\n" 
-				+ "JOIN PERFIL p \r\n" 
-				+ "ON  U.perfil_id = p.id\r\n" 
-				+ "JOIN CARGO c\r\n"
-				+ "on u.cargo_id = c.id "
-				+ " where lower(c.descricao_cargo) like ?";
+				+ "FROM USUARIO u\r\n" + "JOIN PERFIL p \r\n" + "ON  U.perfil_id = p.id\r\n" + "JOIN CARGO c\r\n"
+				+ "on u.cargo_id = c.id " + " where lower(c.descricao_cargo) like ?";
 		List<UsuarioDTO> usuarios = new ArrayList<>();
-		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { "%"+cargo.toLowerCase()+"%" }, new RowMapper<UsuarioDTO>() {
-
-			@Override
-			public UsuarioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-				UsuarioDTO usuario = new UsuarioDTO();
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setAtivo(rs.getString("ativo").equalsIgnoreCase("true") ? "Ativo" : "Inativo");
-				usuario.setDataNascimento(rs.getDate("data_nascimento").toLocaleString());
-				usuario.setPerfil(rs.getString("descricao_perfil"));
-				usuario.setCargo(rs.getString("descricao_cargo"));
-				usuario.setSexo(rs.getString("sexo"));
-
-				return usuario;
-			}
-
-		});
+		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { "%" + cargo.toLowerCase() + "%" },
+				new UsuarioDTORowMapper());
 		return usuarios;
 	}
 
 	public List<UsuarioDTO> buscarUsuarioPorPerfil(JdbcTemplate jdbcTemplate2, String perfil) throws Exception {
 
 		String sql = " SELECT ativo, cpf, data_nascimento , nome , sexo, descricao_perfil, descricao_cargo\r\n"
-				+ "FROM USUARIO u\r\n" 
-				+ "JOIN PERFIL p \r\n" 
-				+ "ON  U.perfil_id = p.id\r\n" 
-				+ "JOIN CARGO c\r\n"
-				+ "on u.cargo_id = c.id "
-				+ " where lower(p.descricao_perfil) like ?";
+				+ "FROM USUARIO u\r\n" + "JOIN PERFIL p \r\n" + "ON  U.perfil_id = p.id\r\n" + "JOIN CARGO c\r\n"
+				+ "on u.cargo_id = c.id " + " where lower(p.descricao_perfil) like ?";
 		List<UsuarioDTO> usuarios = new ArrayList<>();
-		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { "%"+perfil.toLowerCase()+"%" }, new RowMapper<UsuarioDTO>() {
-
-			@Override
-			public UsuarioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-				UsuarioDTO usuario = new UsuarioDTO();
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setAtivo(rs.getString("ativo").equalsIgnoreCase("true") ? "Ativo" : "Inativo");
-				usuario.setDataNascimento(rs.getDate("data_nascimento").toLocaleString());
-				usuario.setPerfil(rs.getString("descricao_perfil"));
-				usuario.setCargo(rs.getString("descricao_cargo"));
-				usuario.setSexo(rs.getString("sexo"));
-
-				return usuario;
-			}
-
-		});
+		usuarios = (List<UsuarioDTO>) jdbcTemplate.query(sql, new Object[] { "%" + perfil.toLowerCase() + "%" },
+				new UsuarioDTORowMapper());
 		return usuarios;
 	}
 
