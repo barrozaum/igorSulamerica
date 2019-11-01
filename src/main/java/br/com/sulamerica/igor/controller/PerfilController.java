@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +31,12 @@ public class PerfilController {
 
 	@GetMapping
 	public List<Perfil> lista() {
-		List<Perfil> listaCargos = perilRepository.findAll();
-		return listaCargos;
+		List<Perfil> listaPerfil = perilRepository.findAll();
+		return listaPerfil;
 	}
 
 	@PostMapping
-	public ResponseEntity<Perfil> cadastra(@RequestBody PerfilForm form, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<Perfil> cadastra(@RequestBody @Valid PerfilForm form, UriComponentsBuilder uriBuilder) {
 		Perfil perfil = form.converter();
 		perilRepository.save(perfil);
 		URI uri = uriBuilder.path("/perfil/{id}").buildAndExpand(perfil.getId()).toUri();

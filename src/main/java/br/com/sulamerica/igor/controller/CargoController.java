@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class CargoController {
 	// url http://localhost:8080/cargo
 
 	@PostMapping
-	public ResponseEntity<Cargo> cadastra(@RequestBody CargoForm form, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<Cargo> cadastra(@RequestBody @Valid CargoForm form, UriComponentsBuilder uriBuilder) {
 		Cargo cargo = form.converter();
 
 		cargoRepository.save(cargo);
